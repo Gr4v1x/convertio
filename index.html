@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.85">
-    <meta name="description" content="Convert your images to different formats. PNG, JPEG, WebP, BMP, GIF. Download all images in one ZIP file.">
+    <meta name="description" content="Convert your images to different formats. PNG, JPEG, WebP, BMP, GIF, DDS. Download all images in one ZIP file.">
     <meta name="theme-color" content="#2196f3">
     
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://gr4v1x.github.io/convertio/">
     <meta property="og:title" content="Image Converter - Convertio">
-    <meta property="og:description" content="Convert your images to different formats instantly. PNG, JPEG, WebP, BMP, GIF. Download all converted images in one ZIP file.">
+    <meta property="og:description" content="Convert your images to different formats instantly. PNG, JPEG, WebP, BMP, GIF, DDS. Download all converted images in one ZIP file.">
     <meta property="og:image" content="https://raw.githubusercontent.com/Gr4v1x/convertio/main/ui.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -18,8 +18,8 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://gr4v1x.github.io/convertio/">
     <meta property="twitter:title" content="Image Converter - Convertio">
-    <meta property="twitter:description" content="Convert your images to different formats instantly. PNG, JPEG, WebP, BMP, GIF.">
-    <meta property="twitter:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'><rect width='1200' height='630' fill='%230F1B2D'/><text x='600' y='200' font-size='120' fill='%232196f3' text-anchor='middle' font-family='Arial' font-weight='bold'></text><text x='600' y='350' font-size='80' fill='%232196f3' text-anchor='middle' font-family='Arial' font-weight='bold'>Image Converter</text><text x='600' y='450' font-size='40' fill='%23cbd5e0' text-anchor='middle' font-family='Arial'>Convert images to PNG, JPEG, WebP, BMP, GIF</text><text x='600' y='550' font-size='35' fill='%232196f3' text-anchor='middle' font-family='Arial'>gr4v1x.github.io/convertio</text></svg>">
+    <meta property="twitter:description" content="Convert your images to different formats instantly. PNG, JPEG, WebP, BMP, GIF, DDS.">
+    <meta property="twitter:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'><rect width='1200' height='630' fill='%230F1B2D'/><text x='600' y='200' font-size='120' fill='%232196f3' text-anchor='middle' font-family='Arial' font-weight='bold'></text><text x='600' y='350' font-size='80' fill='%232196f3' text-anchor='middle' font-family='Arial' font-weight='bold'>Image Converter</text><text x='600' y='450' font-size='40' fill='%23cbd5e0' text-anchor='middle' font-family='Arial'>Convert images to PNG, JPEG, WebP, BMP, GIF, DDS</text><text x='600' y='550' font-size='35' fill='%232196f3' text-anchor='middle' font-family='Arial'>gr4v1x.github.io/convertio</text></svg>">
     <meta property="twitter:image" content="https://raw.githubusercontent.com/Gr4v1x/convertio/main/ui.png">
     
     <title>Image Converter</title>
@@ -99,7 +99,7 @@
                         </svg>
                     </div>
                     <p class="text-primary font-semibold text-lg mb-1">Drag images here or click to select</p>
-                    <p class="text-slate-500 dark:text-on-surface-variant text-sm">PNG, JPEG, WebP, BMP, GIF supported</p>
+                    <p class="text-slate-500 dark:text-on-surface-variant text-sm">PNG, JPEG, WebP, BMP, GIF, DDS supported</p>
                     <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
                 </div>
             </div>
@@ -107,12 +107,13 @@
             <!-- Format Selection -->
             <div class="mb-8">
                 <p class="text-slate-900 dark:text-white font-medium mb-4">Select conversion format:</p>
-                <div id="formatGrid" class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div id="formatGrid" class="grid grid-cols-3 md:grid-cols-6 gap-3">
                     <button class="format-btn py-2 border border-slate-200 dark:border-outline-variant rounded text-slate-600 dark:text-on-surface-variant font-medium hover:border-primary hover:text-primary transition-all" data-format="png">PNG</button>
                     <button class="format-btn py-2 border border-slate-200 dark:border-outline-variant rounded text-slate-600 dark:text-on-surface-variant font-medium hover:border-primary hover:text-primary transition-all" data-format="jpeg">JPEG</button>
                     <button class="format-btn py-2 border border-slate-200 dark:border-outline-variant rounded text-slate-600 dark:text-on-surface-variant font-medium hover:border-primary hover:text-primary transition-all" data-format="webp">WebP</button>
                     <button class="format-btn py-2 border border-slate-200 dark:border-outline-variant rounded text-slate-600 dark:text-on-surface-variant font-medium hover:border-primary hover:text-primary transition-all" data-format="bmp">BMP</button>
                     <button class="format-btn py-2 border border-slate-200 dark:border-outline-variant rounded text-slate-600 dark:text-on-surface-variant font-medium hover:border-primary hover:text-primary transition-all" data-format="gif">GIF</button>
+                    <button class="format-btn py-2 border border-slate-200 dark:border-outline-variant rounded text-slate-600 dark:text-on-surface-variant font-medium hover:border-primary hover:text-primary transition-all" data-format="dds">DDS</button>
                 </div>
             </div>
 
@@ -304,16 +305,74 @@
 
         function canvasToBlob(canvas, format) {
             return new Promise((resolve) => {
-                const mimeType = {
-                    'png': 'image/png',
-                    'jpeg': 'image/jpeg',
-                    'webp': 'image/webp',
-                    'bmp': 'image/bmp',
-                    'gif': 'image/gif'
-                }[format] || 'image/png';
+                if (format === 'dds') {
+                    resolve(canvasToDDS(canvas));
+                } else {
+                    const mimeType = {
+                        'png': 'image/png',
+                        'jpeg': 'image/jpeg',
+                        'webp': 'image/webp',
+                        'bmp': 'image/bmp',
+                        'gif': 'image/gif'
+                    }[format] || 'image/png';
 
-                canvas.toBlob(resolve, mimeType, 0.95);
+                    canvas.toBlob(resolve, mimeType, 0.95);
+                }
             });
+        }
+
+        function canvasToDDS(canvas) {
+            const width = canvas.width;
+            const height = canvas.height;
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            const headerSize = 128;
+            const bufferSize = width * height * 4;
+            const arrayBuffer = new ArrayBuffer(headerSize + bufferSize);
+            const view = new DataView(arrayBuffer);
+
+            // Magic number "DDS "
+            view.setUint32(0, 0x20534444, true);
+            view.setUint32(4, 124, true); // Size of header
+            view.setUint32(8, 0x100F, true); // Flags: DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PITCH | DDSD_PIXELFORMAT
+            view.setUint32(12, height, true);
+            view.setUint32(16, width, true);
+            view.setUint32(20, width * 4, true); // Pitch
+            view.setUint32(24, 0, true); // Depth
+            view.setUint32(28, 0, true); // Mipmap count
+
+            // Pixel format
+            view.setUint32(76, 32, true); // Size of pixel format struct
+            view.setUint32(80, 0x41, true); // Flags: DDPF_RGB | DDPF_ALPHAPIXELS
+            view.setUint32(84, 0, true); // FourCC
+            view.setUint32(88, 32, true); // RGB bit count
+            view.setUint32(92, 0x00FF0000, true); // R mask
+            view.setUint32(96, 0x0000FF00, true); // G mask
+            view.setUint32(100, 0x000000FF, true); // B mask
+            view.setUint32(104, 0xFF000000, true); // A mask
+
+            // Caps
+            view.setUint32(108, 0x1000, true); // DDSCAPS_TEXTURE
+            view.setUint32(112, 0, true);
+            view.setUint32(116, 0, true);
+            view.setUint32(120, 0, true);
+
+            // Pixel data (DDS is typically bottom-up)
+            const pixels = new Uint8Array(arrayBuffer, headerSize);
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const srcIdx = ((height - 1 - y) * width + x) * 4;
+                    const dstIdx = (y * width + x) * 4;
+                    pixels[dstIdx] = data[srcIdx]; // R
+                    pixels[dstIdx + 1] = data[srcIdx + 1]; // G
+                    pixels[dstIdx + 2] = data[srcIdx + 2]; // B
+                    pixels[dstIdx + 3] = data[srcIdx + 3]; // A
+                }
+            }
+
+            return new Blob([arrayBuffer], { type: 'image/vnd-ms.dds' });
         }
 
         function updateProgress(current, total) {
